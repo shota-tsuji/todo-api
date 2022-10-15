@@ -16,16 +16,32 @@ func NewTaskServer() *taskServer {
 	return &taskServer{store: store}
 }
 
-func (ts *taskServer) getAllTasksHandler(c *gin.Context) {
+func (ts *taskServer) getTaskList(c *gin.Context) {
 	allTasks := ts.store.GetAllTasks()
 	c.JSON(http.StatusOK, allTasks)
+}
+
+func (ts *taskServer) createTask(c *gin.Context) {
+	type RequestTask struct {
+		Text string `json:"text"`
+	}
+
+	var rt RequestTask
+	if err := c.ShouldBindJSON(&rt); err != nil {
+		c.String(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	id := ts.store.CreateTask(rt.Text)
+	c.JSON(http.StatusOK, gin.H{"Id": id})
 }
 
 func main() {
 	router := gin.Default()
 	server := NewTaskServer()
 
-	router.GET("/task/", server.getAllTasksHandler)
+	router.GET("/task/", server.getTaskList)
+	router.POST("/task/", server.createTask)
 
 	router.Run("localhost:" + os.Getenv("SERVERPORT"))
 }

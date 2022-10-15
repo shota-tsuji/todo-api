@@ -31,3 +31,17 @@ func (ts *TaskStore) GetAllTasks() []Task {
 	}
 	return allTasks
 }
+
+func (ts *TaskStore) CreateTask(text string) int {
+	ts.Lock()
+	defer ts.Unlock()
+
+	task := Task{
+		Id:   ts.nextId,
+		Text: text,
+	}
+
+	ts.tasks[ts.nextId] = task
+	ts.nextId++
+	return task.Id
+}
