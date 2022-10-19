@@ -1,6 +1,12 @@
 package taskstore
 
-import "sync"
+import (
+	"database/sql"
+	_ "github.com/go-sql-driver/mysql"
+	"log"
+	"sync"
+	"time"
+)
 
 type Task struct {
 	Id   int    `json:"id"`
@@ -10,14 +16,27 @@ type Task struct {
 type TaskStore struct {
 	sync.Mutex
 
-	tasks  map[int]Task
-	nextId int
+	db *sql.DB
 }
 
 func New() *TaskStore {
 	ts := &TaskStore{}
-	ts.tasks = make(map[int]Task)
-	ts.nextId = 0
+
+	db, err := sql.Open("mysql", "root:password@/todo")
+	if err != nil {
+		panic(err)
+	}
+	db.SetConnMaxLifetime(time.Minute * 3)
+	db.SetMaxOpenConns(10)
+	db.SetMaxIdleConns(10)
+	err = db.Ping()
+	if err != nil {
+		log.Fatal("fatal")
+	} else {
+		log.Println("success")
+	}
+
+	ts.db = db
 	return ts
 }
 
@@ -25,23 +44,35 @@ func (ts *TaskStore) GetAllTasks() []Task {
 	ts.Lock()
 	defer ts.Unlock()
 
-	allTasks := make([]Task, 0, len(ts.tasks))
-	for _, task := range ts.tasks {
-		allTasks = append(allTasks, task)
+	rows, _ := ts.db.Query("select * from task")
+
+	var allTasks []Task
+	for rows.Next() {
+		var id int
+		var title string
+		rows.Scan(&id, &title)
+		allTasks = append(allTasks, Task{Id: id, Text: title})
 	}
+
 	return allTasks
 }
 
-func (ts *TaskStore) CreateTask(text string) int {
+func (ts *TaskStore) CreateTask(title string) int {
 	ts.Lock()
 	defer ts.Unlock()
 
-	task := Task{
-		Id:   ts.nextId,
-		Text: text,
+	row := ts.db.QueryRow("select count(*) from task")
+	var count int
+	row.Scan(&count)
+	id := count + 1
+
+	result, err := ts.db.Exec("insert into task(id, title) values (?, ?)",
+		id, title)
+	_, err = result.LastInsertId()
+
+	if err != nil {
+		return -1
 	}
 
-	ts.tasks[ts.nextId] = task
-	ts.nextId++
-	return task.Id
+	return id
 }
