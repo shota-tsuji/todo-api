@@ -2,16 +2,12 @@ package service
 
 import (
 	"database/sql"
+	"example.com/go-gin-todolist/domain/entity"
 	_ "github.com/go-sql-driver/mysql"
 	"log"
 	"sync"
 	"time"
 )
-
-type Task struct {
-	Id   int    `json:"id"`
-	Text string `json:"text"`
-}
 
 type TaskService struct {
 	sync.Mutex
@@ -40,18 +36,18 @@ func New() *TaskService {
 	return ts
 }
 
-func (ts *TaskService) GetAllTasks() []Task {
+func (ts *TaskService) GetAllTasks() []entity.Task {
 	ts.Lock()
 	defer ts.Unlock()
 
 	rows, _ := ts.mysqlSession.Query("select * from task")
 
-	var allTasks []Task
+	var allTasks []entity.Task
 	for rows.Next() {
 		var id int
 		var title string
 		rows.Scan(&id, &title)
-		allTasks = append(allTasks, Task{Id: id, Text: title})
+		allTasks = append(allTasks, entity.Task{Id: id, Text: title})
 	}
 
 	return allTasks

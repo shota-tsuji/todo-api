@@ -7,21 +7,21 @@ import (
 	"os"
 )
 
-type taskServer struct {
+type TaskController struct {
 	store *service.TaskService
 }
 
-func NewTaskServer() *taskServer {
+func NewTaskController() *TaskController {
 	store := service.New()
-	return &taskServer{store: store}
+	return &TaskController{store: store}
 }
 
-func (ts *taskServer) getTaskList(c *gin.Context) {
-	allTasks := ts.store.GetAllTasks()
+func (tc *TaskController) GetTaskList(c *gin.Context) {
+	allTasks := tc.store.GetAllTasks()
 	c.JSON(http.StatusOK, allTasks)
 }
 
-func (ts *taskServer) createTask(c *gin.Context) {
+func (tc *TaskController) CreateTask(c *gin.Context) {
 	type RequestTask struct {
 		Text string `json:"text"`
 	}
@@ -32,16 +32,16 @@ func (ts *taskServer) createTask(c *gin.Context) {
 		return
 	}
 
-	id := ts.store.CreateTask(rt.Text)
+	id := tc.store.CreateTask(rt.Text)
 	c.JSON(http.StatusOK, gin.H{"Id": id})
 }
 
 func main() {
 	router := gin.Default()
-	server := NewTaskServer()
+	server := NewTaskController()
 
-	router.GET("/task/", server.getTaskList)
-	router.POST("/task/", server.createTask)
+	router.GET("/task/", server.GetTaskList)
+	router.POST("/task/", server.CreateTask)
 
 	router.Run("localhost:" + os.Getenv("SERVERPORT"))
 }
