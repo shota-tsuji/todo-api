@@ -1,18 +1,18 @@
 package main
 
 import (
-	"example.com/go-gin-todolist/internal/taskstore"
+	"example.com/go-gin-todolist/domain/service"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"os"
 )
 
 type taskServer struct {
-	store *taskstore.TaskStore
+	store *service.TaskService
 }
 
 func NewTaskServer() *taskServer {
-	store := taskstore.New()
+	store := service.New()
 	return &taskServer{store: store}
 }
 

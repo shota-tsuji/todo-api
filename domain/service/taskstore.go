@@ -1,4 +1,4 @@
-package taskstore
+package service
 
 import (
 	"database/sql"
@@ -13,14 +13,14 @@ type Task struct {
 	Text string `json:"text"`
 }
 
-type TaskStore struct {
+type TaskService struct {
 	sync.Mutex
 
-	db *sql.DB
+	mysqlSession *sql.DB
 }
 
-func New() *TaskStore {
-	ts := &TaskStore{}
+func New() *TaskService {
+	ts := &TaskService{}
 
 	db, err := sql.Open("mysql", "root:password@/todo")
 	if err != nil {
@@ -36,15 +36,15 @@ func New() *TaskStore {
 		log.Println("success")
 	}
 
-	ts.db = db
+	ts.mysqlSession = db
 	return ts
 }
 
-func (ts *TaskStore) GetAllTasks() []Task {
+func (ts *TaskService) GetAllTasks() []Task {
 	ts.Lock()
 	defer ts.Unlock()
 
-	rows, _ := ts.db.Query("select * from task")
+	rows, _ := ts.mysqlSession.Query("select * from task")
 
 	var allTasks []Task
 	for rows.Next() {
@@ -57,16 +57,16 @@ func (ts *TaskStore) GetAllTasks() []Task {
 	return allTasks
 }
 
-func (ts *TaskStore) CreateTask(title string) int {
+func (ts *TaskService) CreateTask(title string) int {
 	ts.Lock()
 	defer ts.Unlock()
 
-	row := ts.db.QueryRow("select count(*) from task")
+	row := ts.mysqlSession.QueryRow("select count(*) from task")
 	var count int
 	row.Scan(&count)
 	id := count + 1
 
-	result, err := ts.db.Exec("insert into task(id, title) values (?, ?)",
+	result, err := ts.mysqlSession.Exec("insert into task(id, title) values (?, ?)",
 		id, title)
 	_, err = result.LastInsertId()
 
