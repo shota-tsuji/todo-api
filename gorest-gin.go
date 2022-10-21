@@ -1,8 +1,10 @@
 package main
 
 import (
+	"context"
 	"example.com/go-gin-todolist/domain/service"
 	"github.com/gin-gonic/gin"
+	"go.uber.org/fx"
 	"net/http"
 	"os"
 )
@@ -36,12 +38,30 @@ func (tc *TaskController) CreateTask(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"Id": id})
 }
 
-func main() {
+func NewHttpServer(lc fx.Lifecycle) *gin.Engine {
 	router := gin.Default()
 	server := NewTaskController()
-
 	router.GET("/task/", server.GetTaskList)
 	router.POST("/task/", server.CreateTask)
-
 	router.Run("localhost:" + os.Getenv("SERVERPORT"))
+
+	lc.Append(fx.Hook{
+		OnStart: func(ctx context.Context) error {
+			return nil
+		},
+		OnStop: func(ctx context.Context) error {
+			// clean up router
+			return nil
+		},
+	})
+	return router
+}
+
+func main() {
+	fx.New(
+		fx.Provide(
+			NewHttpServer,
+		),
+		fx.Invoke(func(engine *gin.Engine) {}),
+	).Run()
 }
