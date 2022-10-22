@@ -14,6 +14,14 @@ func NewTaskController(taskService *service.TaskService) *TaskController {
 	return &TaskController{taskService: taskService}
 }
 
+// GetTaskList godoc
+// @Summary      List tasks
+// @Description  get tasks
+// @Tags         tasks
+// @Accept       json
+// @Produce      json
+// @Success      200  {array} []entity.Task
+// @Router /tasks [get]
 func (tc *TaskController) GetTaskList(c *gin.Context) {
 	allTasks := tc.taskService.GetAllTasks()
 	c.JSON(http.StatusOK, allTasks)

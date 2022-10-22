@@ -1,0 +1,36 @@
+basePath: /api/v1
+definitions:
+  entity.Task:
+    properties:
+      id:
+        type: integer
+      text:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: This is a task management application.
+  title: Task Management API
+  version: "1.0"
+paths:
+  /tasks:
+    get:
+      consumes:
+      - application/json
+      description: get tasks
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              items:
+                $ref: '#/definitions/entity.Task'
+              type: array
+            type: array
+      summary: List tasks
+      tags:
+      - tasks
+swagger: "2.0"
