@@ -9,8 +9,8 @@ import (
 	"time"
 )
 
-func NewMysqlSession(config config.Config) *sql.DB {
-	dsn := fmt.Sprintf("%s:%s@/%s", config.Mysql.User, config.Mysql.Password, config.Mysql.Database)
+func NewMysqlSession(mc config.MysqlConfig) *sql.DB {
+	dsn := fmt.Sprintf("%s:%s@/%s", mc.User, mc.Password, mc.Database)
 	db, err := sql.Open("mysql", dsn)
 	if err != nil {
 		panic(err)

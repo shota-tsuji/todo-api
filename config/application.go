@@ -7,15 +7,8 @@ import (
 )
 
 type Config struct {
-	Server struct {
-		Host string
-		Port string
-	}
-	Mysql struct {
-		User     string
-		Password string
-		Database string
-	}
+	ServerConfig `yaml:"server"`
+	MysqlConfig  `yaml:"mysql"`
 }
 
 func NewConfig() Config {

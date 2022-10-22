@@ -22,7 +22,7 @@ import (
 // @host localhost:8080
 // @BasePath  /api/v1
 
-func Run(controller *presentation.TaskController, config config.Config) {
+func Run(controller *presentation.TaskController, sc config.ServerConfig) {
 	r := gin.Default()
 	v1 := r.Group("/api/v1")
 	{
@@ -35,7 +35,7 @@ func Run(controller *presentation.TaskController, config config.Config) {
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	err := r.Run(config.Server.Host + ":" + config.Server.Port)
+	err := r.Run(sc.Host + ":" + sc.Port)
 	if err != nil {
 		log.Fatal("server failed.")
 		return
@@ -44,8 +44,8 @@ func Run(controller *presentation.TaskController, config config.Config) {
 
 func main() {
 	fx.New(
+		config.Module,
 		fx.Provide(
-			config.NewConfig,
 			fx.Annotate(mysql.NewRepository, fx.As(new(repository.TaskRepository))),
 			mysql.NewMysqlSession,
 			service.NewTaskService,
