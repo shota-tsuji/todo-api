@@ -1,11 +1,9 @@
-package main
+package presentation
 
 import (
 	"example.com/go-gin-todolist/domain/service"
 	"github.com/gin-gonic/gin"
-	"go.uber.org/fx"
 	"net/http"
-	"os"
 )
 
 type TaskController struct {
@@ -35,20 +33,4 @@ func (tc *TaskController) CreateTask(c *gin.Context) {
 
 	id := tc.store.CreateTask(rt.Text)
 	c.JSON(http.StatusOK, gin.H{"Id": id})
-}
-
-func Run(controller *TaskController) {
-	router := gin.Default()
-	router.GET("/task/", controller.GetTaskList)
-	router.POST("/task/", controller.CreateTask)
-	router.Run("localhost:" + os.Getenv("SERVERPORT"))
-}
-
-func main() {
-	fx.New(
-		fx.Provide(
-			NewTaskController,
-		),
-		fx.Invoke(Run),
-	).Run()
 }
