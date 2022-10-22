@@ -1,6 +1,7 @@
 package main
 
 import (
+	"example.com/go-gin-todolist/config"
 	_ "example.com/go-gin-todolist/docs"
 	"example.com/go-gin-todolist/domain/repository"
 	"example.com/go-gin-todolist/domain/service"
@@ -12,7 +13,6 @@ import (
 	"go.uber.org/fx"
 	"log"
 	"net/http"
-	"os"
 )
 
 // @title Task Management API
@@ -22,7 +22,7 @@ import (
 // @host localhost:8080
 // @BasePath  /api/v1
 
-func Run(controller *presentation.TaskController) {
+func Run(controller *presentation.TaskController, config config.Config) {
 	r := gin.Default()
 	v1 := r.Group("/api/v1")
 	{
@@ -35,7 +35,7 @@ func Run(controller *presentation.TaskController) {
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	err := r.Run("localhost:" + os.Getenv("SERVERPORT"))
+	err := r.Run(config.Server.Host + ":" + config.Server.Port)
 	if err != nil {
 		log.Fatal("server failed.")
 		return
@@ -45,6 +45,7 @@ func Run(controller *presentation.TaskController) {
 func main() {
 	fx.New(
 		fx.Provide(
+			config.NewConfig,
 			fx.Annotate(mysql.NewRepository, fx.As(new(repository.TaskRepository))),
 			mysql.NewMysqlSession,
 			service.NewTaskService,

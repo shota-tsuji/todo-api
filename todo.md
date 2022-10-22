@@ -1,6 +1,7 @@
 # Todo
 
 - [x] DI container
+- [ ] yaml configuration
 - [ ] create interface for use-case
 - [ ] create interface for service
 - [ ] controller test
