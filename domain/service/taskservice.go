@@ -3,10 +3,7 @@ package service
 import (
 	"database/sql"
 	"example.com/go-gin-todolist/domain/entity"
-	_ "github.com/go-sql-driver/mysql"
-	"log"
 	"sync"
-	"time"
 )
 
 type TaskService struct {
@@ -15,25 +12,8 @@ type TaskService struct {
 	mysqlSession *sql.DB
 }
 
-func NewTaskService() *TaskService {
-	ts := &TaskService{}
-
-	db, err := sql.Open("mysql", "root:password@/todo")
-	if err != nil {
-		panic(err)
-	}
-	db.SetConnMaxLifetime(time.Minute * 3)
-	db.SetMaxOpenConns(10)
-	db.SetMaxIdleConns(10)
-	err = db.Ping()
-	if err != nil {
-		log.Fatal("fatal")
-	} else {
-		log.Println("success")
-	}
-
-	ts.mysqlSession = db
-	return ts
+func NewTaskService(db *sql.DB) *TaskService {
+	return &TaskService{mysqlSession: db}
 }
 
 func (ts *TaskService) GetAllTasks() []entity.Task {
