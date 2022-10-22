@@ -1,6 +1,7 @@
 package main
 
 import (
+	"example.com/go-gin-todolist/domain/repository"
 	"example.com/go-gin-todolist/domain/service"
 	"example.com/go-gin-todolist/infrastructure/mysql"
 	"example.com/go-gin-todolist/presentation"
@@ -25,6 +26,7 @@ func Run(controller *presentation.TaskController) {
 func main() {
 	fx.New(
 		fx.Provide(
+			fx.Annotate(mysql.NewRepository, fx.As(new(repository.TaskRepository))),
 			mysql.NewMysqlSession,
 			service.NewTaskService,
 			presentation.NewTaskController,
