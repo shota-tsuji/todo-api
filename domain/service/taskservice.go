@@ -15,7 +15,7 @@ type TaskService struct {
 	mysqlSession *sql.DB
 }
 
-func New() *TaskService {
+func NewTaskService() *TaskService {
 	ts := &TaskService{}
 
 	db, err := sql.Open("mysql", "root:password@/todo")

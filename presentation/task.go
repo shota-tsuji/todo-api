@@ -7,16 +7,15 @@ import (
 )
 
 type TaskController struct {
-	store *service.TaskService
+	taskService *service.TaskService
 }
 
-func NewTaskController() *TaskController {
-	store := service.New()
-	return &TaskController{store: store}
+func NewTaskController(taskService *service.TaskService) *TaskController {
+	return &TaskController{taskService: taskService}
 }
 
 func (tc *TaskController) GetTaskList(c *gin.Context) {
-	allTasks := tc.store.GetAllTasks()
+	allTasks := tc.taskService.GetAllTasks()
 	c.JSON(http.StatusOK, allTasks)
 }
 
@@ -31,6 +30,6 @@ func (tc *TaskController) CreateTask(c *gin.Context) {
 		return
 	}
 
-	id := tc.store.CreateTask(rt.Text)
+	id := tc.taskService.CreateTask(rt.Text)
 	c.JSON(http.StatusOK, gin.H{"Id": id})
 }

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"example.com/go-gin-todolist/domain/service"
 	"example.com/go-gin-todolist/presentation"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/fx"
@@ -23,6 +24,7 @@ func Run(controller *presentation.TaskController) {
 func main() {
 	fx.New(
 		fx.Provide(
+			service.NewTaskService,
 			presentation.NewTaskController,
 		),
 		fx.Invoke(Run),
