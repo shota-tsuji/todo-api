@@ -38,11 +38,10 @@ func (tc *TaskController) CreateTask(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"Id": id})
 }
 
-func NewHttpServer(lc fx.Lifecycle) *gin.Engine {
+func Run(lc fx.Lifecycle, controller *TaskController) {
 	router := gin.Default()
-	server := NewTaskController()
-	router.GET("/task/", server.GetTaskList)
-	router.POST("/task/", server.CreateTask)
+	router.GET("/task/", controller.GetTaskList)
+	router.POST("/task/", controller.CreateTask)
 	router.Run("localhost:" + os.Getenv("SERVERPORT"))
 
 	lc.Append(fx.Hook{
@@ -54,14 +53,13 @@ func NewHttpServer(lc fx.Lifecycle) *gin.Engine {
 			return nil
 		},
 	})
-	return router
 }
 
 func main() {
 	fx.New(
 		fx.Provide(
-			NewHttpServer,
+			NewTaskController,
 		),
-		fx.Invoke(func(engine *gin.Engine) {}),
+		fx.Invoke(Run),
 	).Run()
 }
