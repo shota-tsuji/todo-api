@@ -1,4 +1,4 @@
-module example.com/go-gin-todolist
+module example.com/todo-api
 
 go 1.19
 

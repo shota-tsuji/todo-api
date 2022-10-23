@@ -7,7 +7,7 @@ package repository
 import (
 	reflect "reflect"
 
-	entity "example.com/go-gin-todolist/domain/entity"
+	entity "example.com/todo-api/domain/entity"
 	gomock "github.com/golang/mock/gomock"
 )
 

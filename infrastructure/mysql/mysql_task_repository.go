@@ -2,7 +2,7 @@ package mysql
 
 import (
 	"database/sql"
-	"example.com/go-gin-todolist/domain/entity"
+	"example.com/todo-api/domain/entity"
 	"sync"
 )
 

@@ -2,7 +2,7 @@ package mysql
 
 import (
 	"database/sql"
-	"example.com/go-gin-todolist/config"
+	"example.com/todo-api/config"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"log"

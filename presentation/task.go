@@ -1,7 +1,7 @@
 package presentation
 
 import (
-	"example.com/go-gin-todolist/domain/service"
+	"example.com/todo-api/domain/service"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )

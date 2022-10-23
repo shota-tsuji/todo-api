@@ -1,12 +1,12 @@
 package main
 
 import (
-	"example.com/go-gin-todolist/config"
-	_ "example.com/go-gin-todolist/docs"
-	"example.com/go-gin-todolist/domain/repository"
-	"example.com/go-gin-todolist/domain/service"
-	"example.com/go-gin-todolist/infrastructure/mysql"
-	"example.com/go-gin-todolist/presentation"
+	"example.com/todo-api/config"
+	_ "example.com/todo-api/docs"
+	"example.com/todo-api/domain/repository"
+	"example.com/todo-api/domain/service"
+	"example.com/todo-api/infrastructure/mysql"
+	"example.com/todo-api/presentation"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"

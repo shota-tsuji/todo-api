@@ -1,8 +1,8 @@
 package service
 
 import (
-	"example.com/go-gin-todolist/domain/entity"
-	"example.com/go-gin-todolist/domain/repository"
+	"example.com/todo-api/domain/entity"
+	"example.com/todo-api/domain/repository"
 	"github.com/golang/mock/gomock"
 	"reflect"
 	"testing"
